@@ -1,30 +1,70 @@
 import React from 'react'
+import { useState,useEffect } from 'react'
+import useSelectMonedas from '../hooks/useSelectMonedas'
+import {monedas, personas} from '../hooks/monedas'
+import Error from './Error'
+import useSelectCriptos from '../hooks/useSelectCriptos'
+const Formulario = ({setCotizar}) => {
+    useEffect(() => {
+        const consultarApi=async() =>{
+        try {
+            const url = "https://min-api.cryptocompare.com/data/top/mktcapfull?limit=10&tsym=USD";
+            const resultado = await fetch(url);
+            const respuesta = await resultado.json();
+            const arreglosCriptos =respuesta.Data.map(e=>{
+                const criptos ={
+                    id: e.CoinInfo.Name,
+                    valor: e.CoinInfo.FullName
+                }
+                return criptos
+            })
+            console.log(arreglosCriptos)
+            setCriptos(arreglosCriptos)
+        } catch (error) {
+            console.log("error")   
+        }
+        }
+        consultarApi()
+        
+    }, [])
+    const [error, setError] =useState(false)
+    const [criptos, setCriptos] = useState([])
+    const [estado, SeleccionarMonedas ] = useSelectMonedas('Elige tu moneda',monedas)
+    const [valor,SelectCriptos] = useSelectMonedas('Seleccione tu cripto',criptos)
 
-const Formulario = () => {
+    const sendSubmit =(e)=>{
+        e.preventDefault();
+        if ([estado,valor].includes('')) {
+            setError(true)
+            setTimeout(() => {
+                setError(false)
+            }, 3000);
+            return;
+        }
+        setError(false)
+        const valores={
+            estado,valor
+        }
+        setCotizar(valores)
+    }
+
   return (
     <>
-        <h2 className='mt-5 mb-4 text-xl font-bold text-center text-white uppercase border'>Formulario</h2>
-        <form action="" className='text-center bg-red-100 shadow-xl p-7 rounded-xl'>
-            <div className='flex justify-between w-full'>
-                <label htmlFor="" className='text-lg font-light uppercase' >Ingrese moneda</label>
-                <select name="moneda" id="moneda" className='p-2 font-bold'>
-                    <option value="1">Seleccione un opcion</option>
-                    <option value="1">Seleccione un opcion</option>
-                    <option value="1">Seleccione un opcion</option>
-                    <option value="1">Seleccione un opcion</option>
-                </select>
-            </div>
-            <div className='flex justify-between w-full mt-8'>
-                <label htmlFor="" className='text-lg font-light uppercase'>Ingrese moneda</label>
-                <select name="moneda" id="moneda" className='p-2 font-bold'>
-                    <option value="1">Seleccione un opcion</option>
-                </select>
-            </div>
-        <button type='submit' className='p-3 mt-6 text-white bg-red-500 rounded-md'>Consultar</button>
+        <form action="" className='text-center bg-red-100 shadow-xl p-7 rounded-xl' onSubmit={sendSubmit}>
+            {error ? 
+            <Error
+                mensaje="Ingrese todos los campos"
+            /> 
+            : ""
+
+            }
+            <SeleccionarMonedas />
+            <SelectCriptos/>
+        <button type='submit' className='p-3 mt-6 text-white bg-red-500 rounded-md w-full'>Cotizar</button>
         </form>
     </>
-    
+
   )
-}               
+}
 
 export default Formulario

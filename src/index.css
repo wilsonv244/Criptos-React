@@ -1,5 +1,10 @@
 body{
-  background-color: #d25665;
+  /* background-color: #816cbb; */
+  background: linear-gradient(135deg, rgba(12,12,63,0) 0%,rgba(12,12,63,0.37) 7%,rgba(23,58,118,0.8) 15%,rgba(29,81,146,1) 19%,rgba(30,87,153,1) 20%,rgba(12,12,63,1) 50%,rgba(30,87,153,1) 80%,rgba(28,80,145,1) 81%,rgba(22,53,112,0.8) 85%,rgba(12,12,63,0.48) 91%,rgba(12,12,63,0) 100%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+
   font-family: 'Lato', sans-serif;
 }
 @tailwind base;
